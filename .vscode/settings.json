@@ -1,0 +1,69 @@
+{
+  "editor.autoIndent": "advanced",
+  "editor.guides.indentation": true,
+  "editor.tabSize": 4,
+  "mypy.configFile": "./config/mypy.ini",
+  "prettier.ignorePath": "/config/.prettierignore",
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.inlayHints.variableTypes": true,
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportUnknownMemberType": "information",
+    "reportMissingTypeStubs": "information",
+    "reportReturnType": "information",
+    "reportUnusedExcept": "information",
+    "reportUnknownVariableType": "information",
+    "reportUnusedClass": "information",
+    "reportSelfClsParameterName": "warning",
+    "reportUndefinedVariable": "warning",
+    "reportUnusedImport": "warning",
+    "reportUnknownArgumentType": "warning",
+    "reportUnknownLambdaType": "warning",
+    "reportUnusedFunction": "warning",
+    "reportUnusedVariable": "warning",
+    "reportUnusedExpression": "warning",
+    "reportPossiblyUnboundVariable": "warning",
+    "reportInvalidTypeVarUse": "error",
+    "reportUnboundVariable": "error",
+    "reportIncompatibleVariableOverride": "error",
+    "reportUnknownParameterType": "error",
+    "reportPropertyTypeMismatch": "error",
+    "reportDuplicateImport": "error",
+    "reportUninitializedInstanceVariable": "error"
+  },
+  "python.analysis.ignore": ["**/tests/**"],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "buildx",
+    "checkdocker",
+    "DOCKERHUB",
+    "ehandlers",
+    "ehelpers",
+    "errvalues",
+    "globales",
+    "gvariables",
+    "icecream",
+    "indev",
+    "levelname",
+    "nosave",
+    "reponavigator",
+    "seeall",
+    "setarg",
+    "strlit",
+    "topdown",
+    "traceback",
+    "venv",
+    "zperk"
+  ],
+  "cSpell.enableFiletypes": ["shellscript"]
+}
