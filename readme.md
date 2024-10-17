@@ -49,7 +49,7 @@ This repository contains a Python-based application that uses Prolog logic to ma
 To start the application, run the `main.py` file:
 
 ```bash
-python3 main.py
+python3 ./main.py
 ```
 
 The program will prompt you to input the name of a child from the family tree.
@@ -115,11 +115,11 @@ The family tree is represented using Prolog rules. Here are the key relationship
 ├── main.py # Main script that runs the family tree logic
 └── src
     ├── env
-    │   ├── ctypes.py # Defines necessary types for the program
+    │   ├── ctypes.py   # Defines necessary types for the program
     │   ├── globales.py # Global variables and constants
-    │   ├── logger.py # Logging utilities
-    │   └── tools.py # Helper functions for formatting and styling output
-    └── functions.py # Core Prolog engine integration and function handling
+    │   ├── logger.py   # Logging utilities
+    │   └── tools.py    # Helper functions for formatting and styling output
+    └── functions.py    # Core Prolog engine integration and function handling
 ```
 
 ## Customization
@@ -127,11 +127,11 @@ The family tree is represented using Prolog rules. Here are the key relationship
 To customize the family tree, you can modify the Prolog facts in `main.py`. For example, to add a new child or define new relationships, modify the following section:
 
 ```python
-prolog_engine.assertz(f"{PARENT}(john, mary)")
-prolog_engine.assertz(f"{PARENT}(john, paul)")
+assertz(f"{PARENT}(john, mary)")
+assertz(f"{PARENT}(john, paul)")
 # Add more family relationships here...
 ```
 
 ## License
 
-This project is licensed under the MIT & GNU GENERAL PUBLIC [Licenses](license).
+This project is licensed under the MIT [License](license).
