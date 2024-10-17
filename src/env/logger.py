@@ -1,5 +1,5 @@
 """
-GNU GENERAL PUBLIC LICENSE
+GPL-3.0 License
 
 Copyright (c) 2024 zperk
 """
