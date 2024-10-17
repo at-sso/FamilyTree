@@ -1,54 +1,85 @@
-__all__ = ["prolog_engine"]
+__all__ = [
+    "prolog_engine",
+    "prt",
+    "set_style",
+    "get_main_value",
+    "show_child_of_x",
+    "START_COLOR",
+    "CHILD_COLOR",
+    "TITLE_COLOR",
+    "ERROR_COLOR",
+]
 
+import re
 from pyswip import Prolog
 
-from .env.ctypes import *
+from src.env.ctypes import *
+from src.env.logger import logger_handler, logging
+from src.env.globales import *
 
 prolog_engine = Prolog()
 
+START_COLOR = "#fff7d1"
+CHILD_COLOR = "#ffecc8"
+TITLE_COLOR = "#ffd09b"
+ERROR_COLOR = "#ffb0b0"
 
-# Function to get valid child names
-def get_valid_children() -> GenericSet:
+
+def prt(msg: str, level: int = logging.INFO) -> None:
+    """
+    Allows HTML. Inputs a message into the terminal and logs the raw message into the logger.
+    """
+    logger_handler.handler(level, msg, in_shell=True, raw_html=True, raw_msg=True)
+
+
+def set_style(msg: str, hex_color: str = "#fff", extras: str = "") -> str:
+    """
+    Sets a default color to a string, ensuring other styled strings or messages won't break this.
+    Handles opening and closing of extra tags properly.
+    """
+
+    # shoutout chatgpt because what the fuck
+    def extract_closing_tags(extras: str) -> str:
+        """
+        Extracts closing tags from a given string of HTML-like tags, in reverse order.
+        """
+        # Find all opening tags using regex and close them in reverse order
+        tags: List[Any] = re.findall(r"<([a-zA-Z][^>]*)>", extras)
+        closing_tags: str = "".join(f"</{tag.split()[0]}>" for tag in reversed(tags))
+        return closing_tags
+
+    if extras:
+        closing_tags: str = extract_closing_tags(extras)
+        msg = f"{extras}{msg}{closing_tags}"
+
+    return f'<style fg="{hex_color}">{msg}</style>'
+
+
+def get_main_value() -> GenericSet:
+
     children = set()  # Use a set to avoid duplicates
-    for result in prolog_engine.query("parent(_, X)"):
-        children.add(result["X"])
+    for result in prolog_engine.query(f"{PARENT}(_, X)"):
+        children.add(result["X"])  # type: ignore[reportOptionalSubscript]
     return children
 
 
-# Define a function to get the family tree of a specific child
-def get_family_tree(child_name: str) -> None:
-    valid_children: GenericSet = get_valid_children()  # Get all valid child names
+def show_child_of_x(x: LitStr, child_name: Dict[str, str]) -> None:
+    capital_x: str = set_style(x.capitalize(), TITLE_COLOR, "<b><i>")
 
-    # Check if the child exists in the family tree
-    if child_name not in valid_children:
-        print(f"\nError: '{child_name}' does not exist in the family tree.")
-        print("Valid child names are:", ", ".join(valid_children))
-        return
+    prt(f"\n{capital_x} of {child_name['html']}:")
 
-    # If the child exists, display the family tree
-    print(f"\nFamily tree of {child_name}:")
+    # Query for relationships
+    results: StrList | Any = list(
+        prolog_engine.query(f"{x}(X, {child_name['str'].lower()})")
+    )
 
-    # Find parents
-    print("\nParents:")
-    for result in prolog_engine.query(f"parent(X, {child_name})"):
-        print(f"{result['X']} is the parent of {child_name}")
-
-    # Find grandparents
-    print("\nGrandparents:")
-    for result in prolog_engine.query(f"grandparent(X, {child_name})"):
-        print(f"{result['X']} is the grandparent of {child_name}")
-
-    # Find uncles
-    print("\nUncles:")
-    for result in prolog_engine.query(f"uncle(X, {child_name})"):
-        print(f"{result['X']} is the uncle of {child_name}")
-
-    # Find siblings (if any)
-    print("\nSiblings:")
-    for result in prolog_engine.query(f"sibling(X, {child_name})"):
-        print(f"{result['X']} is the sibling of {child_name}")
-
-    # Find children (if the inputted child is also a parent)
-    print("\nChildren:")
-    for result in prolog_engine.query(f"child(X, {child_name})"):
-        print(f"{result['X']} is the child of {child_name}")
+    if results:
+        for result in results:
+            r: str = result["X"]  # type: ignore[reportArgumentType]
+            prt(
+                f"{set_style(r.capitalize(), CHILD_COLOR, '<b><i>')} "  # type: ignore[reportUnknownArgumentType]
+                f"is the {x} of {child_name['html']}"
+            )
+    else:
+        # If no results, inform the user that the child doesn't have any 'x'
+        prt(f"{child_name['html']} doesn't have any {x}.")

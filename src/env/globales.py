@@ -3,11 +3,18 @@ __all__ = [
     "SOURCE_FOLDER",
     "LOGGER_FOLDER_PATH",
     "LOGGER_FILE",
+    "CHILDREN",
+    "PARENT",
+    "GRANDPARENT",
+    "UNCLE",
+    "SIBLING",
 ]
 
 import os
 import sys
 from datetime import datetime
+
+from src.env.ctypes import *
 
 ######################################################################################################
 # Absolute paths for commonly used directories.
@@ -28,3 +35,11 @@ LOGGER_FILE: str = os.path.join(
     (f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}") + ".log",
 )
 ######################################################################################################
+
+######################################################################################################
+# SWI values:
+CHILDREN: LitStr = "children"
+PARENT: LitStr = "parent"
+GRANDPARENT: LitStr = "grandparent"
+UNCLE: LitStr = "uncle"
+SIBLING: LitStr = "sibling"

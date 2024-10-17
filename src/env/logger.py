@@ -1,12 +1,14 @@
 __all__ = ["logger"]
 
-import logging
 import os
+import logging
 from collections.abc import Callable
+from prompt_toolkit import HTML, print_formatted_text
+from html import escape
 from typing import Any
 
-from .ctypes import *
-from .globales import *
+from src.env.ctypes import *
+from src.env.globales import *
 
 
 class __LoggerHandler:
@@ -59,20 +61,34 @@ class __LoggerHandler:
         self.handler(logging.INFO, "Logger started.")
 
     def handler(
-        self, logging_level: int, message: Any, force_logger_in_shell: bool = False
+        self,
+        logging_level: int,
+        message: Any,
+        in_shell: bool = False,
+        fg: str = "#fff",
+        raw_html: bool = False,
+        raw_msg: bool = False,
     ) -> None:
         """
         The function `__logger_message_handler` calls a specified function with a given argument.
 
-        @param logging_level The expected to be a callable that takes a single argument of type `object` and returns `None`.
-        @param msg The `msg` parameter in the `__logger_message_handler` function is an object that
-        represents the message or information that will be passed to the `logging_func` function for logging
-        purposes.
+        @param logging_level The level is expected to be an multiple of `10`, else raise a ValueError exception.
+        @param msg Object that represents the message or information that will be passed
+        to the `__logger_function` function for logging purposes.
+        @param in_shell Forces the logger to print the `msg` parameter in the terminal. (optional)
+        @param fg: Foreground color the `in_shell` message (optional).
+        @param: raw_html: Set a raw HTML message and ignore anything else. Only works if `in_shell` is enabled. (optional)
         """
+        if (logging_level % 10) != 0:
+            raise ValueError(f"Logging level of {logging_level} is invalid.")
         if not self.logger.disabled:
-            if force_logger_in_shell:
-                print(logging_level, message)
-            self.__logger_function[logging_level](message)
+            r = repr(message)
+            if in_shell:
+                try:
+                    print_formatted_text(HTML(message))
+                except:
+                    print(r)
+            self.__logger_function[logging_level](f"{r}" if raw_msg else message)
 
 
 logger_handler = __LoggerHandler()

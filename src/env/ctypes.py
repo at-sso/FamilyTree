@@ -8,12 +8,14 @@ from typing import (
 )
 from typing_extensions import (
     ParamSpec,
+    LiteralString,
 )
 
 List = list
 Dict = dict
-Tuple = tuple  # type: ignore[type-arg]
+Tuple = tuple
 Type = type
+LitStr = LiteralString
 
 # Type constructors:
 _P = ParamSpec("_P")
@@ -33,9 +35,11 @@ GenericCallable = Callable[..., Any]
 
 # Lists
 GenericList = List[Any]
+StrList = List[str]
 
 # Maps
 GenericMap = Dict[Any, Any]
 
 # Sets:
 GenericSet = set[Any]
+StringSet = set[str]
