@@ -1,11 +1,18 @@
-__all__ = ["function_handler", "clear_terminal"]
+"""
+GNU GENERAL PUBLIC LICENSE
+
+Copyright (c) 2024 zperk
+"""
+
+__all__ = ["function_handler", "clear_terminal", "prt", "set_style"]
 
 import os
+import re
 from time import time as timer
 import traceback
 
-from .ctypes import *
-from .logger import *
+from src.env.ctypes import *
+from src.env.logger import logger_handler, logger, logging
 
 
 def clear_terminal() -> int:
@@ -74,3 +81,34 @@ def function_handler(func: GenericCallable) -> Any:
 
     __format_final_message(func)
     return func_val
+
+
+def prt(msg: str, level: int = logging.INFO) -> None:
+    """
+    Accepts HTML input. Displays an HTML message in the terminal and logs its
+    raw string representation to the logger.
+    """
+    logger_handler.handler(level, msg, in_shell=True, raw_msg=True)
+
+
+def set_style(msg: str, hex_color: str = "#fff", extras: str = "") -> str:
+    """
+    Sets a default color to a string, ensuring other styled strings or messages won't break this.
+    Handles opening and closing of extra tags properly.
+    """
+
+    # shoutout chatgpt because what the fuck
+    def extract_closing_tags(extras: str) -> str:
+        """
+        Extracts closing tags from a given string of HTML-like tags, in reverse order.
+        """
+        # Find all opening tags using regex and close them in reverse order
+        tags: List[Any] = re.findall(r"<([a-zA-Z][^>]*)>", extras)
+        closing_tags: str = "".join(f"</{tag.split()[0]}>" for tag in reversed(tags))
+        return closing_tags
+
+    if extras:
+        closing_tags: str = extract_closing_tags(extras)
+        msg = f"{extras}{msg}{closing_tags}"
+
+    return f'<style fg="{hex_color}">{msg}</style>'

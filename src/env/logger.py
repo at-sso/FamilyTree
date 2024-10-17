@@ -1,10 +1,15 @@
+"""
+GNU GENERAL PUBLIC LICENSE
+
+Copyright (c) 2024 zperk
+"""
+
 __all__ = ["logger"]
 
 import os
 import logging
 from collections.abc import Callable
 from prompt_toolkit import HTML, print_formatted_text
-from html import escape
 from typing import Any
 
 from src.env.ctypes import *
@@ -65,8 +70,6 @@ class __LoggerHandler:
         logging_level: int,
         message: Any,
         in_shell: bool = False,
-        fg: str = "#fff",
-        raw_html: bool = False,
         raw_msg: bool = False,
     ) -> None:
         """
@@ -82,7 +85,7 @@ class __LoggerHandler:
         if (logging_level % 10) != 0:
             raise ValueError(f"Logging level of {logging_level} is invalid.")
         if not self.logger.disabled:
-            r = repr(message)
+            r: str = repr(message)
             if in_shell:
                 try:
                     print_formatted_text(HTML(message))

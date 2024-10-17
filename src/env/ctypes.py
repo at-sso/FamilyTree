@@ -1,3 +1,9 @@
+"""
+GNU GENERAL PUBLIC LICENSE
+
+Copyright (c) 2024 zperk
+"""
+
 from collections.abc import (
     Callable,
 )
