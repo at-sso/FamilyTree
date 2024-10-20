@@ -10,7 +10,7 @@ __all__ = [
     "show_child_of_x",
     "START_COLOR",
     "CHILD_COLOR",
-    "TITLE_COLOR",
+    "PARENT_COLOR",
     "ERROR_COLOR",
 ]
 
@@ -19,13 +19,13 @@ from pyswip import Prolog
 
 from src.env.ctypes import *
 from src.env.globales import *
-from src.env.tools import *
+from src.env import tools
 
 prolog_engine = Prolog()
 
 START_COLOR = "#fff7d1"
 CHILD_COLOR = "#ffecc8"
-TITLE_COLOR = "#ffd09b"
+PARENT_COLOR = "#ffd09b"
 ERROR_COLOR = "#ffb0b0"
 
 
@@ -42,30 +42,38 @@ def get_main_value() -> GenericSet:
     return children
 
 
-def show_child_of_x(x: LitStr, child_name: Dict[str, str]) -> None:
+def show_child_of_x(x: LitStr, child_name: dict[str, str]) -> None:
     """
     Shows the child of a given value.
 
     Args:
         x: The value to query for.
         child_name: A dictionary containing the HTML and raw string representations of the child name.
+        The keys of this dictionary must be 'str' and 'html'.
     """
-    capital_x: str = set_style(x.capitalize(), TITLE_COLOR, "<b><i>")
+    capital_x: str = tools.set_style(x.capitalize(), PARENT_COLOR, "<b><i>")
 
-    prt(f"\n{capital_x} of {child_name['html']}:")
+    tools.prt(f"\n{capital_x} of {child_name['html']}:")
 
     # Query for relationships
     results: StrList | Any = list(
-        prolog_engine.query(f"{x}(X, {child_name['str'].lower()})")
+        prolog_engine.query(
+            f"{x}(X, {child_name['str'].lower()})"  # type:ignore[reportUnknownArgumentType]
+        )
     )
 
     if results:
+        # Format and show the results.
         for result in results:
             r: str = result["X"]  # type: ignore[reportArgumentType]
-            prt(
-                f"{set_style(r.capitalize(), CHILD_COLOR, '<b><i>')} "  # type: ignore[reportUnknownArgumentType]
+            tools.prt(
+                f"{tools.set_style(r.capitalize(), CHILD_COLOR, '<b><i>')} "  # type: ignore[reportUnknownArgumentType]
                 f"is the {x} of {child_name['html']}"
             )
     else:
-        # If no results, inform the user that the child doesn't have any 'x'
-        prt(f"{child_name['html']} doesn't have any {x}.")
+        # If no results, inform the user that the child doesn't have any 'x' (parents)
+        tools.prt(
+            tools.set_style(
+                f"{child_name['html']} does not have any {x}(s).", ERROR_COLOR, "<i>"
+            )
+        )

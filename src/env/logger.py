@@ -4,7 +4,7 @@ GPL-3.0 License
 Copyright (c) 2024 zperk
 """
 
-__all__ = ["logger"]
+__all__ = ["logging", "logger", "logger_handler"]
 
 import os
 import logging

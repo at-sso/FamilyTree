@@ -8,11 +8,11 @@ __all__ = ["function_handler", "clear_terminal", "prt", "set_style"]
 
 import os
 import re
-from time import time as timer
 import traceback
+from time import time as timer
 
 from src.env.ctypes import *
-from src.env.logger import logger_handler, logger, logging
+from src.env.logger import *
 
 
 def clear_terminal() -> int:
@@ -103,7 +103,7 @@ def set_style(msg: str, hex_color: str = "#fff", extras: str = "") -> str:
         Extracts closing tags from a given string of HTML-like tags, in reverse order.
         """
         # Find all opening tags using regex and close them in reverse order
-        tags: List[Any] = re.findall(r"<([a-zA-Z][^>]*)>", extras)
+        tags: list[Any] = re.findall(r"<([a-zA-Z][^>]*)>", extras)
         closing_tags: str = "".join(f"</{tag.split()[0]}>" for tag in reversed(tags))
         return closing_tags
 
