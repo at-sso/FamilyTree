@@ -23,7 +23,7 @@ assertz(f"{PARENT}(paul, alice)")  # Paul is the parent of Alice
 Rules:
 Grandparent: A person is a grandparent if they are the parent of someone who is also a parent.
 Uncle: A person is an uncle if they are a sibling of someone's parent.
-Sibling: Two people are siblings if they share at least one parent and are not the same person.
+Sibling: Two people are siblings if they share *at least* one parent and *are not* the same person.
 """
 assertz(f"{GRANDPARENT}(X, Y) :- {PARENT}(X, Z), {PARENT}(Z, Y)")
 assertz(f"{UNCLE}(X, Y) :- {SIBLING}(X, Z), {PARENT}(Z, Y)")
@@ -32,7 +32,6 @@ assertz(f"{CHILDREN}(X, Y) :- {PARENT}(Y, X)")
 
 
 def main() -> int:
-    global capital_child
     while True:
         valid_children: StringSet = get_main_value()  # Get all valid child names
         prt(
@@ -42,21 +41,29 @@ def main() -> int:
         )
 
         child_name: dict[str, str] = {"str": "", "html": ""}
+        """
+        Context for keys:
+        - 'str': Is the *raw* name of the child. This string must always be in lowercase.
+        - 'html': Is the formatted HTML copy of the 'str' key.
+        """
 
-        child_name["str"] = input("> ")
+        child_name["str"] = input("> ").lower()
+        if not child_name["str"]:
+            prt(
+                set_style("Child name cannot be empty.", ERROR_COLOR, "<b>"),
+                level=logging.WARN,
+            )
+            continue
+
         child_name["html"] = set_style(
             child_name["str"].capitalize(), START_COLOR, "<b>"
         )
-
         logger.debug(child_name)
 
         # Check if the child exists in the family tree
         if child_name["str"] not in valid_children:
             prt(
-                set_style(
-                    f"{child_name['html']} is not a valid child.",
-                    ERROR_COLOR,
-                ),
+                set_style(f"{child_name['html']} is not a valid child.", ERROR_COLOR),
                 level=logging.WARN,
             )
             continue
@@ -65,19 +72,19 @@ def main() -> int:
         prt(f"\nFamily tree of {child_name['html']}:")
 
         # Find parents
-        show_child_of_x(PARENT, child_name)
+        x_of_child(PARENT, child_name)
 
         # Find grandparents
-        show_child_of_x(GRANDPARENT, child_name)
+        x_of_child(GRANDPARENT, child_name)
 
         # Find uncles
-        show_child_of_x(UNCLE, child_name)
+        x_of_child(UNCLE, child_name)
 
         # Find siblings (if any)
-        show_child_of_x(SIBLING, child_name)
+        x_of_child(SIBLING, child_name)
 
         # Find children (if the inputted child is also a parent)
-        show_child_of_x(CHILDREN, child_name)
+        x_of_child(CHILDREN, child_name)
 
         return 0
 

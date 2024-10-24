@@ -7,7 +7,7 @@ Copyright (c) 2024 zperk
 __all__ = [
     "prolog_engine",
     "get_main_value",
-    "show_child_of_x",
+    "x_of_child",
     "START_COLOR",
     "CHILD_COLOR",
     "PARENT_COLOR",
@@ -42,38 +42,40 @@ def get_main_value() -> GenericSet:
     return children
 
 
-def show_child_of_x(x: LitStr, child_name: dict[str, str]) -> None:
+def x_of_child(x: LitStr, child_name: dict[str, str]) -> None:
     """
-    Shows the child of a given value.
+    Shows the child of a given value (x).
 
     Args:
         x: The value to query for.
         child_name: A dictionary containing the HTML and raw string representations of the child name.
         The keys of this dictionary must be 'str' and 'html'.
     """
-    capital_x: str = tools.set_style(x.capitalize(), PARENT_COLOR, "<b><i>")
+    child_name_str = child_name["str"]
+    child_name_html = child_name["html"]
 
-    tools.prt(f"\n{capital_x} of {child_name['html']}:")
+    # Format the title of "x" (e.g. {x = Parent} of {child_name = Any}).
+    capital_x_title: str = tools.set_style(x.capitalize(), PARENT_COLOR, "<b><i>")
+    tools.prt(f"\n{capital_x_title} of {child_name_html}:")
 
     # Query for relationships
-    results: StrList | Any = list(
+    results: StrList = list(
         prolog_engine.query(
-            f"{x}(X, {child_name['str'].lower()})"  # type:ignore[reportUnknownArgumentType]
+            f"{x}(X, {child_name_str.lower()})"  # type:ignore[reportUnknownArgumentType]
         )
     )
 
-    if results:
+    if results:  # If there's any results,
         # Format and show the results.
         for result in results:
             r: str = result["X"]  # type: ignore[reportArgumentType]
             tools.prt(
                 f"{tools.set_style(r.capitalize(), CHILD_COLOR, '<b><i>')} "  # type: ignore[reportUnknownArgumentType]
-                f"is the {x} of {child_name['html']}"
+                f"is the {x} of {child_name_html}"
             )
-    else:
-        # If no results, inform the user that the child doesn't have any 'x' (parents)
+    else:  # Inform the user that the child doesn't have any 'x' (any parents)
         tools.prt(
             tools.set_style(
-                f"{child_name['html']} does not have any {x}(s).", ERROR_COLOR, "<i>"
+                f"{child_name_html} does not have any {x}(s).", ERROR_COLOR, "<i>"
             )
         )

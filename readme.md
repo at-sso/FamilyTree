@@ -29,11 +29,17 @@ This repository contains a Python-based application that uses Prolog logic to ma
 
 ## Installation
 
-1. Clone the repository:
+0. Clone the repository:
 
    ```bash
    git clone https://github.com/at-sso/FamilyTree.git
    cd FamilyTree
+   ```
+
+1. Create a virtual environment:
+
+   ```bash
+    python3 -m venv ./.venv
    ```
 
 2. Install the required dependencies (assuming Prolog engine support is included in your environment):
@@ -134,4 +140,4 @@ assertz(f"{PARENT}(john, paul)")
 
 ## License
 
-This project is licensed under the MIT [License](license).
+This project is partially licensed under the MIT [License](license).
